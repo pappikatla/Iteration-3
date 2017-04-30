@@ -452,6 +452,7 @@ public class MapViewController extends CentralUIController implements Initializa
     initializePathFindingBox();
     findMaxID();
     storeState();
+    mapEdits.getRedoStack().clear();
   }
 
   private void initializePathFindingBox() {
@@ -1974,9 +1975,9 @@ public class MapViewController extends CentralUIController implements Initializa
           p = new Point(c.getX(), c.getY(), currentFloor);
         }
         floorPoints.add(p);
-        storeState();
         allPoints.add(p);
         storeState();
+        mapEdits.getRedoStack().clear();
         addVisualNodesForPoint(p, floorPoints);
         setPointFocus(p);
       }
@@ -2082,7 +2083,6 @@ public class MapViewController extends CentralUIController implements Initializa
     }
     else{
       storeState();
-      mapEdits.clearRedo();
     }
   }
 
@@ -2487,8 +2487,9 @@ public class MapViewController extends CentralUIController implements Initializa
 
   // this should be called when an action
   public void storeState() {
-    mapEdits.pushToUndo(allPoints);
-    System.out.println(mapEdits.getUndoStack().toString());
+    ListPoints lp = new ListPoints(allPoints);
+    lp = lp.deepClone();
+    mapEdits.pushToUndo(lp.getPoints());
     editPos++;
     System.out.println(editPos);
   }
@@ -2509,15 +2510,20 @@ public class MapViewController extends CentralUIController implements Initializa
     if (!mapEdits.isRedoEmpty()) {
       mapEdits.redo();
       int size = mapEdits.redoSize();
-      ArrayList<Point> previousState = mapEdits.getRedoStack().get(size - 1);
-      ListPoints lp = new ListPoints(previousState);
+      ArrayList<Point> nextState = mapEdits.getRedoStack().get(size - 1);
+      ListPoints lp = new ListPoints(nextState);
       clearMapDisplay();
       floorPoints = lp.getFloor(currentFloor).getPoints();
       displayPoints(floorPoints);
     }
   }
 
+  @FXML
+  private Button UndoButton;
+  @FXML
+  private Button RedoButton;
+
+  }
 
 
 
-}

@@ -49,11 +49,11 @@ public class EditStack {
   }
 
   public boolean isRedoEmpty() {
-    return (undoStack.size() == 0);
+    return (redoStack.size() == 0);
   }
 
   public boolean isUndoEmpty() {
-    return (redoStack.size() == 0);
+    return (undoStack.size() == 0);
   }
 
   public int redoSize() {
@@ -73,8 +73,8 @@ public class EditStack {
 
   public void redo() {
     if (!isRedoEmpty()) {
-      ArrayList<Point> finalState = popRedo();
-      pushToUndo(finalState);
+      ArrayList<Point> thisState = popRedo();
+      pushToUndo(thisState);
     }
   }
 
