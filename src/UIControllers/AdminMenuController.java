@@ -114,7 +114,6 @@ public class AdminMenuController extends CentralUIController implements Initiali
       adminPermissions = false;
       currentUser.clear();
       currUsername = null;
-      isLoggedIn = false;
       loadScene(primaryStage, "/MainMenu.fxml");
     } catch (Exception e) {
       System.out.println("Cannot load main menu");

@@ -65,21 +65,15 @@ public class EditStack {
   }
 
   public void undo() {
-    if (!isUndoEmpty()) {
-      ArrayList<Point> currState = popUndo();
-      pushToRedo(currState);
-    }
+    ArrayList<Point> currState = popUndo();
+    pushToRedo(currState);
   }
 
   public void redo() {
-    if (!isRedoEmpty()) {
       ArrayList<Point> thisState = popRedo();
       pushToUndo(thisState);
-    }
   }
 
-  public void clearRedo(){
-    redoStack.clear();
-  }
+  public void clearRedo(){redoStack.clear();}
 
 }

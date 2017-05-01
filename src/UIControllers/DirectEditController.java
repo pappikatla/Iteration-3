@@ -435,7 +435,6 @@ public class DirectEditController extends CentralUIController implements Initial
     adminPermissions = false;
     currentUser.clear();
     currUsername = null;
-    isLoggedIn = false;
     Stage primaryStage = (Stage) anchorPane.getScene().getWindow();
     try {
       loadScene(primaryStage, "/MainMenu.fxml");
