@@ -71,7 +71,6 @@ public class MainMenuController extends CentralUIController implements Initializ
 
   @Override
   public void customListenerY () {
-    MainKey.setLayoutY(y_res - MainKey.getFitHeight() - 10);
     MapButton.setLayoutY(6*(y_res/11) - MapButton.getFitHeight()/2);
     MapLabel.setLayoutY(6*(y_res/11) + 100);
     SearchButton.setLayoutY(6*(y_res/11) - SearchButton.getFitHeight()/2);

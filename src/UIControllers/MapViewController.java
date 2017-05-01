@@ -455,7 +455,6 @@ public class MapViewController extends CentralUIController implements Initializa
     initializePathFindingBox();
     findMaxID();
     storeState();
-    mapEdits.getRedoStack().clear();
   }
 
   private void initializePathFindingBox() {
@@ -1980,7 +1979,6 @@ public class MapViewController extends CentralUIController implements Initializa
         floorPoints.add(p);
         allPoints.add(p);
         storeState();
-        clearRedoList();
         addVisualNodesForPoint(p, floorPoints);
         setPointFocus(p);
       }
@@ -2086,7 +2084,6 @@ public class MapViewController extends CentralUIController implements Initializa
     }
     else{
       storeState();
-      clearRedoList();
     }
   }
 
@@ -2452,12 +2449,14 @@ public class MapViewController extends CentralUIController implements Initializa
       @Override public void handle(ActionEvent e) {
         setPointFocus(point);
         deletePoints(false); //Removes the one point selected.
+        storeState();
       }
     });
     deleteAllPoints.setOnAction(new EventHandler<ActionEvent>() {
       @Override public void handle(ActionEvent e) {
         addPointToSecondarySelection(point);
         deletePoints(true); //Removes all points selected.
+        storeState();
       }
     });
     copyPoint.setOnAction(new EventHandler<ActionEvent>() {
@@ -2469,6 +2468,7 @@ public class MapViewController extends CentralUIController implements Initializa
     pastePoint.setOnAction(new EventHandler<ActionEvent>() {
       @Override public void handle(ActionEvent e) {
         paste(); //Pastes all points in the queue.
+        storeState();
       }
     });
   }
@@ -2493,14 +2493,12 @@ public class MapViewController extends CentralUIController implements Initializa
     ListPoints lp = new ListPoints(allPoints);
     lp = lp.deepClone();
     mapEdits.pushToUndo(lp.getPoints());
+    mapEdits.clearRedo();
   }
 
   public void undo() {
-    System.out.println("Undo size before undo:" + mapEdits.undoSize());
     if(mapEdits.undoSize() > 1){
       mapEdits.undo();
-      System.out.println("Undo size after undo:" + mapEdits.undoSize());
-      System.out.println("Redo size after undo:" + mapEdits.redoSize());
       int size = mapEdits.undoSize();
       ArrayList<Point> previousState = mapEdits.getUndoStack().get(size-1);
       ListPoints lp = new ListPoints(previousState);
@@ -2516,8 +2514,6 @@ public class MapViewController extends CentralUIController implements Initializa
       int size = mapEdits.redoSize();
       ArrayList<Point> nextState = mapEdits.getRedoStack().get(size-1);
       mapEdits.redo();
-      System.out.println("Undo size after REDO:" + mapEdits.undoSize());
-      System.out.println("Redo size after REDO:" + mapEdits.redoSize());
       ListPoints lp = new ListPoints(nextState);
       clearMapDisplay();
       floorPoints = lp.getFloor(currentFloor).getPoints();
@@ -2526,13 +2522,6 @@ public class MapViewController extends CentralUIController implements Initializa
     }
   }
 
-  public void clearRedoList() {
-    if (mapEdits.undoSize() < mapEdits.redoSize()){
-      mapEdits.clearRedo();
-      System.out.println("This is being cleared");
-    }
-    System.out.println("This is not being cleared.");
-  }
 
   //TODO : Make undo-redo accessible through shortcuts or find spot for buttons and disable when its not possible
 
